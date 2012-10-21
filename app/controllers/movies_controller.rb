@@ -54,6 +54,7 @@ class MoviesController < ApplicationController
 #    self.Movie
 #    @movies = Movie.all
 #    @movies = Movie.where(:rating => @selected_ratings) if self.selected_movie_ratings
+#   sort_saved = nil
     self.sort
   end
 
@@ -86,6 +87,7 @@ class MoviesController < ApplicationController
   end
 
   def sort
+#   col_header = nil
     logger.debug("enter sort - sort_saved session")
     logger.debug(self.sort_saved.inspect)
     if params[:col]
@@ -96,8 +98,10 @@ class MoviesController < ApplicationController
     self.sort_saved = col_header
     logger.debug("after - sort_saved session")
     logger.debug(self.sort_saved.inspect)
-    col = col_header.gsub("_header", '')
-    @col = col
+    if col_header
+      col = col_header.gsub("_header", '')
+      @col = col
+    end
     logger.debug("col.inspect")
     logger.debug(col.inspect)
     logger.debug("@col.inspect")
@@ -105,7 +109,12 @@ class MoviesController < ApplicationController
     logger.debug(self.ratings_param_saved)
 #    self.ratings_param_saved = params[:ratings] if params[:ratings]
 #    @movies = Movie.find(:all, :order => col)
-    @movies = Movie.where(:rating => @selected_ratings).order(col) if self.selected_movie_ratings
+    if self.selected_movie_ratings
+      @movies = Movie.where(:rating => @selected_ratings)
+      if col
+        @movies = @movies.order(col)
+      end
+    end
     logger.debug(@movie.inspect)
     render :template => 'movies/index'
     end
