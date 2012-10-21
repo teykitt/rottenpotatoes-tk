@@ -1,0 +1,8 @@
+class Movie < ActiveRecord::Base
+
+  def all_ratings
+    ar = Movie.select(:rating).map(&:rating).uniq.sort
+    return ar
+  end
+
+end
